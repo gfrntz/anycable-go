@@ -1,0 +1,52 @@
+nodeSelector: {}
+
+replicas: 2
+
+image:
+  repository: anycable/anycable-go
+  tag: 0.6.0-preview6
+  pullPolicy: IfNotPresent
+
+ingress:
+  enable: true
+  hosts:
+    - acme: false
+      name: ""
+      path: /cable
+      tls:
+        crt: ""
+        key: ""
+revisionHistoryLimit: 20
+
+rollingUpdate:
+  maxSurge: 2
+  maxUnavailable: 0
+
+# Resource limits for items API app.
+# These values were taken from the real graphs from produciton.
+resources:
+  limits:
+    cpu: 350m
+    memory: 400Mi
+  requests:
+    cpu: 350m
+    memory: 400Mi
+
+# Application options (passed as env variables)
+envSecrets:
+  addr: ""
+  builderStorage: ""
+  buildpackUrl: ""
+  debug: ""
+  goversion: ""
+  port: ""
+  redis: ""
+  rpc: ""
+
+objectstorageSecrets:
+  accesskey: ""
+  builderBucket: ""
+  databaseBucket: ""
+  region: ""
+  registryBucket: ""
+  secretkey: ""

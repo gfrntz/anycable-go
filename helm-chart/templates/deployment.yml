@@ -1,0 +1,122 @@
+apiVersion: v1
+items:
+- apiVersion: extensions/v1beta1
+  kind: Deployment
+  metadata:
+    name: {{ .Release.Name | quote }}
+    labels:
+      app: {{ template "anycable.name" . }}
+      chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+      release: {{ .Release.Name | quote }}
+      heritage: {{ .Release.Service | quote }}
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: {{ default 2 .Values.replicas }}
+    revisionHistoryLimit: {{ default 10 .Values.revisionHistoryLimit }}
+    selector:
+      matchLabels:
+        app: {{ template "anycable.name" . }}
+        release: {{ .Release.Name | quote }}
+    strategy:
+      rollingUpdate:
+        maxSurge: {{ .Values.rollingUpdate.maxSurge }}
+        maxUnavailable: {{ .Values.rollingUpdate.maxUnavailable }}
+      type: {{ .Values.image.pullPolicy | quote }}
+    template:
+      metadata:
+        labels:
+          app: {{ template "anycable.name" . }}
+          chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+          release: {{ .Release.Name | quote }}
+          heritage: {{ .Release.Service | quote }}
+        annotations:
+          checksum/config: {{ include (print $.Template.BasePath "/env-secret.yml") . | sha256sum }}
+        name: {{ .Release.Name | quote }}
+      spec:
+        affinity:
+          podAntiAffinity:
+            preferredDuringSchedulingIgnoredDuringExecution:
+            - podAffinityTerm:
+                topologyKey: kubernetes.io/hostname
+                labelSelector:
+                  matchLabels:
+                    app: {{ template "anycable.name" . }}
+                    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+                    release: {{ .Release.Name | quote }}
+              weight: 100
+        containers:
+        - args:
+          - start
+          - web
+          command:
+          - /runner/init
+          env:
+          - name: ADDR
+            valueFrom:
+              secretKeyRef:
+                key: addr
+                name: {{ .Release.Name }}-secrets
+          - name: BUILDER_STORAGE
+            valueFrom:
+              secretKeyRef:
+                key: builder-storage
+                name: {{ .Release.Name }}-secrets
+          - name: BUILDPACK_URL
+            valueFrom:
+              secretKeyRef:
+                key: buildpack-url
+                name: {{ .Release.Name }}-secrets
+          - name: DEBUG
+            valueFrom:
+              secretKeyRef:
+                key: debug
+                name: {{ .Release.Name }}-secrets
+          - name: GOVERSION
+            valueFrom:
+              secretKeyRef:
+                key: goversion
+                name: {{ .Release.Name }}-secrets
+          - name: PORT
+            valueFrom:
+              secretKeyRef:
+                key: port
+                name: {{ .Release.Name }}-secrets
+          - name: REDIS
+            valueFrom:
+              secretKeyRef:
+                key: redis
+                name: {{ .Release.Name }}-secrets
+          - name: RPC
+            valueFrom:
+              secretKeyRef:
+                key: rpc
+                name: {{ .Release.Name }}-secrets
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: IfNotPresent
+          name: ebay-ru-cable-web
+          readinessProbe:
+            exec:
+              command:
+              - bash
+              - -c
+              - '[[ ''$(ps -p 1 -o args)'' != *''bash /runner/init''* ]]'
+            failureThreshold: 1
+            initialDelaySeconds: 30
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 5
+          {{- if .Values.resources }}
+          resources:
+    {{ toYaml .Values.resources | indent 10 }}
+          {{- end -}}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /var/run/secrets/deis/objectstore/creds
+            name: objectstorage-keyfile
+            readOnly: true
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
