@@ -43,66 +43,146 @@ spec:
                   release: {{ .Release.Name | quote }}
             weight: 100
       containers:
-      - args:
-        - start
-        - web
-        command:
-        - /runner/init
-        env:
-        - name: ADDR
+      - env:
+        {{- if .Values.anycableHost }}
+        - name: ANYCABLE_HOST
           valueFrom:
             secretKeyRef:
-              key: addr
+              key: anycableHost
               name: {{ .Release.Name }}-secrets
-        - name: BUILDER_STORAGE
+        {{- end }}
+        {{- if .Values.anycableDebug }}
+        - name: ANYCABLE_DEBUG
           valueFrom:
             secretKeyRef:
-              key: builder-storage
+              key: anycableDebug
               name: {{ .Release.Name }}-secrets
-        - name: BUILDPACK_URL
+        {{- end }}
+        {{- if .Values.anycablePort }}
+        - name: ANYCABLE_PORT
           valueFrom:
             secretKeyRef:
-              key: buildpack-url
+              key: anycablePort
               name: {{ .Release.Name }}-secrets
-        - name: DEBUG
+        {{- end }}
+        {{- if .Values.anycableRedisUrl }}
+        - name: ANYCABLE_REDIS_URL
           valueFrom:
             secretKeyRef:
-              key: debug
+              key: anycableRedisUrl
               name: {{ .Release.Name }}-secrets
-        - name: GOVERSION
+        {{- end }}
+        {{- if .Values.anycablePath }}
+        - name: ANYCABLE_PATH
           valueFrom:
             secretKeyRef:
-              key: goversion
+              key: anycablePath
               name: {{ .Release.Name }}-secrets
-        - name: PORT
+        {{- end }}
+        {{- if .Values.anycableSSLCert }}
+        - name: ANYCABLE_SSL_CERT
           valueFrom:
             secretKeyRef:
-              key: port
+              key: anycableSSLCert
               name: {{ .Release.Name }}-secrets
-        - name: REDIS
+        {{- end }}
+        {{- if .Values.anycableSSLKey }}
+        - name: ANYCABLE_SSL_KEY
           valueFrom:
             secretKeyRef:
-              key: redis
+              key: anycableSSLKey
               name: {{ .Release.Name }}-secrets
-        - name: RPC
+        {{- end }}
+        {{- if .Values.anycableRedisChannel }}
+        - name: ANYCABLE_REDIS_CHANNEL
           valueFrom:
             secretKeyRef:
-              key: rpc
+              key: anycableRedisChannel
               name: {{ .Release.Name }}-secrets
+        {{- end }}
+        {{- if .Values.anycableRpcHost }}
+        - name: ANYCABLE_RPC_HOST
+          valueFrom:
+            secretKeyRef:
+              key: anycableRpcHost
+              name: {{ .Release.Name }}-secrets
+        {{- end }}
+        {{- if .Values.anycableHeaders }}
+        - name: ANYCABLE_HEADERS
+          valueFrom:
+            secretKeyRef:
+              key: anycableHeaders
+              name: {{ .Release.Name }}-secrets
+        {{- end }}
+        {{- if .Values.anycableDisconnectRate }}
+        - name: ANYCABLE_DISCONNECT_RATE
+          valueFrom:
+            secretKeyRef:
+              key: anycableDisconnectRate
+              name: {{ .Release.Name }}-secrets
+        {{- end }}
+        {{- if .Values.anycableLogLevel }}
+        - name: ANYCABLE_LOG_LEVEL
+          valueFrom:
+            secretKeyRef:
+              key: anycableLogLevel
+              name: {{ .Release.Name }}-secrets
+        {{- end }}
+        {{- if .Values.anycableLogFormat }}
+        - name: ANYCABLE_LOG_FORMAT
+          valueFrom:
+            secretKeyRef:
+              key: anycableLogFormat
+              name: {{ .Release.Name }}-secrets
+        {{- end }}
+        {{- if .Values.anycableMetricsLog }}
+        - name: ANYCABLE_METRICS_LOG
+          valueFrom:
+            secretKeyRef:
+              key: anycableMetricsLog
+              name: {{ .Release.Name }}-secrets
+        {{- end }}
+        {{- if .Values.anycableMetricsLogInterval }}
+        - name: ANYCABLE_METRICS_LOG_INTERVAL
+          valueFrom:
+            secretKeyRef:
+              key: anycableMetricsLogInterval
+              name: {{ .Release.Name }}-secrets
+        {{- end }}
+        {{- if .Values.anycableMetricsPath }}
+        - name: ANYCABLE_METRICS_PATH
+          valueFrom:
+            secretKeyRef:
+              key: anycableMetricsPath
+              name: {{ .Release.Name }}-secrets
+        {{- end }}
+        {{- if .Values.anycableMetricsHost }}
+        - name: ANYCABLE_METRICS_HOST
+          valueFrom:
+            secretKeyRef:
+              key: anycableMetricsHost
+              name: {{ .Release.Name }}-secrets
+        {{- end }}
+        {{- if .Values.anycableMetricsPort }}
+        - name: ANYCABLE_METRICS_PORT
+          valueFrom:
+            secretKeyRef:
+              key: anycableMetricsPort
+              name: {{ .Release.Name }}-secrets
+        {{- end }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: IfNotPresent
-        name: ebay-ru-cable-web
-        readinessProbe:
-          exec:
-            command:
-            - bash
-            - -c
-            - '[[ ''$(ps -p 1 -o args)'' != *''bash /runner/init''* ]]'
-          failureThreshold: 1
-          initialDelaySeconds: 30
-          periodSeconds: 5
-          successThreshold: 1
-          timeoutSeconds: 5
+        # readinessProbe:
+        #   exec:
+        #     command:
+        #     - bash
+        #     - -c
+        #     - '[[ ''$(ps -p 1 -o args)'' != *''bash /runner/init''* ]]'
+        #   failureThreshold: 1
+        #   initialDelaySeconds: 30
+        #   periodSeconds: 5
+        #   successThreshold: 1
+        #   timeoutSeconds: 5
         {{- if .Values.resources }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}

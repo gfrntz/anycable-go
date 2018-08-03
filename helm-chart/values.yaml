@@ -34,19 +34,8 @@ resources:
 
 # Application options (passed as env variables)
 envSecrets:
-  addr: ""
-  builderStorage: ""
-  buildpackUrl: ""
-  debug: ""
-  goversion: ""
-  port: ""
-  redis: ""
-  rpc: ""
-
-objectstorageSecrets:
-  accesskey: ""
-  builderBucket: ""
-  databaseBucket: ""
-  region: ""
-  registryBucket: ""
-  secretkey: ""
+  anycableHost: ""
+  anycableDebug: ""
+  anycablePort: ""
+  anycableRedisUrl: ""
+  anycableRpcHost: ""
