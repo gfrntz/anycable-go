@@ -43,127 +43,128 @@ spec:
                   release: {{ .Release.Name | quote }}
             weight: 100
       containers:
-      - env:
-        {{- if .Values.anycableHost }}
+      - name: anycable-go
+        env:
+        {{- if .Values.envSecrets.anycableHost }}
         - name: ANYCABLE_HOST
           valueFrom:
             secretKeyRef:
               key: anycableHost
               name: {{ .Release.Name }}-secrets
         {{- end }}
-        {{- if .Values.anycableDebug }}
+        {{- if .Values.envSecrets.anycableDebug }}
         - name: ANYCABLE_DEBUG
           valueFrom:
             secretKeyRef:
               key: anycableDebug
               name: {{ .Release.Name }}-secrets
         {{- end }}
-        {{- if .Values.anycablePort }}
+        {{- if .Values.envSecrets.anycablePort }}
         - name: ANYCABLE_PORT
           valueFrom:
             secretKeyRef:
               key: anycablePort
               name: {{ .Release.Name }}-secrets
         {{- end }}
-        {{- if .Values.anycableRedisUrl }}
+        {{- if .Values.envSecrets.anycableRedisUrl }}
         - name: ANYCABLE_REDIS_URL
           valueFrom:
             secretKeyRef:
               key: anycableRedisUrl
               name: {{ .Release.Name }}-secrets
         {{- end }}
-        {{- if .Values.anycablePath }}
+        {{- if .Values.envSecrets.anycablePath }}
         - name: ANYCABLE_PATH
           valueFrom:
             secretKeyRef:
               key: anycablePath
               name: {{ .Release.Name }}-secrets
         {{- end }}
-        {{- if .Values.anycableSSLCert }}
+        {{- if .Values.envSecrets.anycableSSLCert }}
         - name: ANYCABLE_SSL_CERT
           valueFrom:
             secretKeyRef:
               key: anycableSSLCert
               name: {{ .Release.Name }}-secrets
         {{- end }}
-        {{- if .Values.anycableSSLKey }}
+        {{- if .Values.envSecrets.anycableSSLKey }}
         - name: ANYCABLE_SSL_KEY
           valueFrom:
             secretKeyRef:
               key: anycableSSLKey
               name: {{ .Release.Name }}-secrets
         {{- end }}
-        {{- if .Values.anycableRedisChannel }}
+        {{- if .Values.envSecrets.anycableRedisChannel }}
         - name: ANYCABLE_REDIS_CHANNEL
           valueFrom:
             secretKeyRef:
               key: anycableRedisChannel
               name: {{ .Release.Name }}-secrets
         {{- end }}
-        {{- if .Values.anycableRpcHost }}
+        {{- if .Values.envSecrets.anycableRpcHost }}
         - name: ANYCABLE_RPC_HOST
           valueFrom:
             secretKeyRef:
               key: anycableRpcHost
               name: {{ .Release.Name }}-secrets
         {{- end }}
-        {{- if .Values.anycableHeaders }}
+        {{- if .Values.envSecrets.anycableHeaders }}
         - name: ANYCABLE_HEADERS
           valueFrom:
             secretKeyRef:
               key: anycableHeaders
               name: {{ .Release.Name }}-secrets
         {{- end }}
-        {{- if .Values.anycableDisconnectRate }}
+        {{- if .Values.envSecrets.anycableDisconnectRate }}
         - name: ANYCABLE_DISCONNECT_RATE
           valueFrom:
             secretKeyRef:
               key: anycableDisconnectRate
               name: {{ .Release.Name }}-secrets
         {{- end }}
-        {{- if .Values.anycableLogLevel }}
+        {{- if .Values.envSecrets.anycableLogLevel }}
         - name: ANYCABLE_LOG_LEVEL
           valueFrom:
             secretKeyRef:
               key: anycableLogLevel
               name: {{ .Release.Name }}-secrets
         {{- end }}
-        {{- if .Values.anycableLogFormat }}
+        {{- if .Values.envSecrets.anycableLogFormat }}
         - name: ANYCABLE_LOG_FORMAT
           valueFrom:
             secretKeyRef:
               key: anycableLogFormat
               name: {{ .Release.Name }}-secrets
         {{- end }}
-        {{- if .Values.anycableMetricsLog }}
+        {{- if .Values.envSecrets.anycableMetricsLog }}
         - name: ANYCABLE_METRICS_LOG
           valueFrom:
             secretKeyRef:
               key: anycableMetricsLog
               name: {{ .Release.Name }}-secrets
         {{- end }}
-        {{- if .Values.anycableMetricsLogInterval }}
+        {{- if .Values.envSecrets.anycableMetricsLogInterval }}
         - name: ANYCABLE_METRICS_LOG_INTERVAL
           valueFrom:
             secretKeyRef:
               key: anycableMetricsLogInterval
               name: {{ .Release.Name }}-secrets
         {{- end }}
-        {{- if .Values.anycableMetricsPath }}
+        {{- if .Values.envSecrets.anycableMetricsPath }}
         - name: ANYCABLE_METRICS_PATH
           valueFrom:
             secretKeyRef:
               key: anycableMetricsPath
               name: {{ .Release.Name }}-secrets
         {{- end }}
-        {{- if .Values.anycableMetricsHost }}
+        {{- if .Values.envSecrets.anycableMetricsHost }}
         - name: ANYCABLE_METRICS_HOST
           valueFrom:
             secretKeyRef:
               key: anycableMetricsHost
               name: {{ .Release.Name }}-secrets
         {{- end }}
-        {{- if .Values.anycableMetricsPort }}
+        {{- if .Values.envSecrets.anycableMetricsPort }}
         - name: ANYCABLE_METRICS_PORT
           valueFrom:
             secretKeyRef:
